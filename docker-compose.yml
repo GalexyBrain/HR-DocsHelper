@@ -1,0 +1,30 @@
+name: notebook
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    image: notebook-api:latest
+    ports:
+      - 5000:5000
+    volumes:
+      - ./:/app
+    environment:
+      - FLASK_ENV=development
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: notebook-frontend:latest
+    ports:
+      - 3000:3000
+    depends_on:
+      - api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000
+
